@@ -35,14 +35,14 @@ void list_pid_dir_content(const int pid)
          owner[MAX_STRLEN] = "",
          dir_path[MAX_STRLEN] = "/proc/";
     
-    strcat(dir_path, pid_string);
-
     /* int to string */
     sprintf(pid_string, "%d", pid);
+    strcat(dir_path, pid_string);
+
     get_proc_comm(pid_string, comm);
     get_owner(dir_path, owner);
 
-    printf("pid: %s, command: %s, owner: %s\n", pid_string, comm, owner);
+    printf("path: %s, pid: %s, command: %s, owner: %s\n", dir_path, pid_string, comm, owner);
     
     DIR *pid_dir;
     struct dirent *entry;
