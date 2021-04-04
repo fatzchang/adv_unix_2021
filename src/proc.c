@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <pwd.h>
+#include <sys/types.h>
+
 #include "proc.h"
 #include "filter.h"
 
@@ -12,13 +16,13 @@ void list_proc_content()
 {
     int length;
     int *pid_arr = get_sorted_pid_arr(&length);
-    printf("length: %d\n", length);
 
     for (int i = 0; i < length; i++) {
         list_pid_dir_content(pid_arr[i]);
     }
 
     // free pid_arr
+    free(pid_arr);
 }
 
 /* cwd -> root -> exe -> mem -> fd([0-9]+[rwu]) */
@@ -26,16 +30,19 @@ void list_proc_content()
 // directory name is pid
 void list_pid_dir_content(const int pid)
 {   
-    char pid_string[MAX_STRLEN] = "", 
-         comm[MAX_STRLEN] = "";
+    char pid_string[MAX_STRLEN] = "",
+         comm[MAX_STRLEN] = "",
+         owner[MAX_STRLEN] = "",
+         dir_path[MAX_STRLEN] = "/proc/";
+    
+    strcat(dir_path, pid_string);
 
+    /* int to string */
     sprintf(pid_string, "%d", pid);
     get_proc_comm(pid_string, comm);
-    
-    printf("pid: %s, comm: %s\n", pid_string, comm);
+    get_owner(dir_path, owner);
 
-    char dir_path[MAX_STRLEN] = "/proc/";
-    strcat(dir_path, pid_string);
+    printf("pid: %s, command: %s, owner: %s\n", pid_string, comm, owner);
     
     DIR *pid_dir;
     struct dirent *entry;
@@ -69,7 +76,6 @@ int * get_sorted_pid_arr(int *length)
     int i = 0;
     while ((entry = readdir(proc_dir)) != NULL) {
         if (is_pure_num(entry->d_name)) {
-            printf("get_sorted_pid_arr: %s\n", entry->d_name);
             pid_arr[i] = atoi(entry->d_name);
             i++;
         }
@@ -100,4 +106,20 @@ int pid_dir_count()
 int _compare(const void *a, const void *b)
 {
     return *((int *)a) - *((int *)b);
+}
+
+
+void get_owner(char *dir_path, char *owner)
+{
+    struct stat dir_stat;
+    struct passwd *pwd;
+
+    if (stat(dir_path, &dir_stat) == -1) {
+        perror("stat");
+        exit(-1);
+    };
+
+    pwd = getpwuid(dir_stat.st_uid);
+
+    strcpy(owner, pwd->pw_name);
 }

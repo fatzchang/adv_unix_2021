@@ -7,5 +7,6 @@ char * get_proc_comm(const char *pid, char *comm);
 int * get_sorted_pid_arr(int *length);
 int pid_dir_count();
 int _compare(const void *a, const void *b);
+void get_owner(char *dir_path, char *owner);
 
 #endif
