@@ -1,12 +1,12 @@
-#include <dirent.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdio.h>
+
 #include "hw1.h"
 #include "filter.h"
 #include "proc.h"
 #include "mode.h"
 
-#include <stdio.h>
 
 /* filter srings, has to be initialize */
 char *cmd_reg_string, *file_reg_string, *type;
@@ -18,18 +18,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    DIR *proc_dir;
-    struct dirent *entry;
-    proc_dir = opendir("/proc");
-
-    while ((entry = readdir(proc_dir)) != NULL) {
-        if (is_pure_num(entry->d_name)) {
-            list_proc_content(entry->d_name);
-            // printf("%s\n", entry->d_name);
-        }
-    }
-
-    closedir(proc_dir);
+    list_proc_content();
     
     return 0;
 }
