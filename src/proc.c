@@ -14,6 +14,8 @@ void list_proc_content()
 {
     int length;
     int *pid_arr = get_sorted_pid_arr(&length);
+
+    format_printer("COMMAND", "PID", "USER", "FD", "TYPE", "NODE", "NAME");
     for (int i = 0; i < length; i++) {
         list_pid_dir_content(pid_arr[i]);
     }

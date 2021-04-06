@@ -64,8 +64,9 @@ void list_mem_maps(const char *command, const char *pid_string, const char *user
     while (fgets(buf, sizeof(buf), fp) != NULL) {
         char node[MAX_STRLEN] = "";
         char name[MAX_STRLEN] = "";
+        char stat[MAX_STRLEN] = "";
 
-        sscanf(buf, "%*s %*s %*s %*s %s %s", node, name);
+        sscanf(buf, "%*s %*s %*s %*s %s %s %s", node, name, stat);
 
         if (strcmp(node, "0") == 0) {
             continue;
@@ -79,7 +80,13 @@ void list_mem_maps(const char *command, const char *pid_string, const char *user
         memset(prev_node, 0, sizeof(char) * MAX_STRLEN);
         strcpy(prev_node, node);
 
-        format_printer(command, pid_string, user, "mem", "REG", node, name); 
+        if (strcmp(stat, "(deleted)") == 0) {
+            strcat(name, " (deleted)");
+            format_printer(command, pid_string, user, "del", "unknown", node, name); 
+        } else {
+            format_printer(command, pid_string, user, "mem", "REG", node, name); 
+        }
+
 
     }
     
@@ -151,20 +158,21 @@ void format_printer(
     const char *node, 
     const char *fd_real_path
 ) {
-    
-    if (is_mode_on(CMD_MODE) && !match_filter(CMD_MODE, command)) {
-        return;
+    if (strcmp(command, "COMMAND") != 0) {
+        if (is_mode_on(CMD_MODE) && !match_filter(CMD_MODE, command)) {
+            return;
+        }
+
+        if (is_mode_on(TYPE_MODE) && !match_filter(TYPE_MODE, type)) {
+            return;
+        }
+
+        if (is_mode_on(FILE_MODE) && !match_filter(FILE_MODE, fd_real_path)) {
+            return;
+        }
     }
 
-    if (is_mode_on(TYPE_MODE) && !match_filter(TYPE_MODE, type)) {
-        return;
-    }
-
-    if (is_mode_on(FILE_MODE) && !match_filter(FILE_MODE, fd_real_path)) {
-        return;
-    }
-
-    printf("%-5s %-5s %-5s %-5s %-5s %-5s %-5s\n", command, pid, user, fd, type, node, fd_real_path);
+    printf("%-5s %-5s %-5s %-5s %-8s %-10s %-5s\n", command, pid, user, fd, type, node, fd_real_path);
 }
 
 
