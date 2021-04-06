@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     }
 
     list_proc_content();
-    
     return 0;
 }
 
@@ -37,11 +36,11 @@ int parse_args(int argc, char *argv[])
                 type = optarg;
                 rtn = is_valid_type(type) ? 0 : -1;
                 if (rtn == -1) {
-                    printf("invalid TYPE\n");
+                    printf("invalid type\n");
                 }
                 break;
             case 'f':
-                cmd_reg_string = optarg;
+                file_reg_string = optarg;
                 break;
             default:
                 // TODO: default, missing argument ??
