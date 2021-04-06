@@ -141,8 +141,13 @@ void list_fd(const char *command, const char *pid_string, const char *user)
 
         strcpy(fd, entry->d_name);
         strcat(fd, permission);
+
+        if (strstr(fd_real_path, "(deleted)") != NULL) {
+            format_printer(command, pid_string, user, fd, "unknown", node, fd_real_path);
+        } else {
+            format_printer(command, pid_string, user, fd, type, node, fd_real_path);
+        }
     
-        format_printer(command, pid_string, user, fd, type, node, fd_real_path);
     }
 
 
