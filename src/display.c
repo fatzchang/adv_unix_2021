@@ -87,8 +87,6 @@ void list_mem_maps(const char *command, const char *pid_string, const char *user
         } else {
             format_printer(command, pid_string, user, "mem", "REG", node, name); 
         }
-
-
     }
     
     fclose(fp);   
@@ -134,22 +132,27 @@ void list_fd(const char *command, const char *pid_string, const char *user)
             perror("fd stat");
             exit(-1);
         }
+
         get_type(fd_stat, type);
-        get_node(fd_stat, node);
+
+
+        if (strcmp(type, "unknown") != 0) {
+            get_node(fd_stat, node);
+        }
+    
+
         readlink(fd_path, fd_real_path, MAX_STRLEN);
 
         strcpy(fd, entry->d_name);
         strcat(fd, permission);
 
-
         if (strstr(fd_real_path, "(deleted)") != NULL) {
-            format_printer(command, pid_string, user, fd, "unknown", node, fd_real_path);
+            format_printer(command, pid_string, user, fd, "unknown", "", fd_real_path);
         } else {
             format_printer(command, pid_string, user, fd, type, node, fd_real_path);
         }
     
     }
-
 
     closedir(fd_dir);
 }

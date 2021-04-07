@@ -1,6 +1,5 @@
 CC=gcc
-# FLAGS = -Wall -Werror
-FLAGS = -Wall
+FLAGS = -Wall -Wextra -Werror
 
 SRC_DIR=src
 INCL_DIR=include

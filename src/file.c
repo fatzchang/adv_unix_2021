@@ -71,11 +71,11 @@ char * get_type(struct stat file_stat, char *type)
     return type;
 }
 
-char * get_node(struct stat file_stat, char *type) 
+char * get_node(struct stat file_stat, char *node) 
 {
-    sprintf(type, "%d", (int)file_stat.st_ino);
+    sprintf(node, "%ld", file_stat.st_ino);
 
-    return type;
+    return node;
 }
 
 void get_permission(char *path, char* permission)

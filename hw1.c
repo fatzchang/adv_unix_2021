@@ -7,7 +7,6 @@
 #include "proc.h"
 #include "mode.h"
 
-
 /* filter srings, has to be initialize */
 char *cmd_reg_string, *file_reg_string, *type;
 
@@ -36,7 +35,7 @@ int parse_args(int argc, char *argv[])
                 type = optarg;
                 rtn = is_valid_type(type) ? 0 : -1;
                 if (rtn == -1) {
-                    printf("invalid type\n");
+                    printf("Invalid TYPE option.\n");
                 }
                 break;
             case 'f':
