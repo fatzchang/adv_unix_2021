@@ -46,18 +46,26 @@ char * get_type(struct stat file_stat, char *type)
 {
     mode_t m = file_stat.st_mode;
 
-    if (m & S_IFREG) {
-        strcpy(type, "REG");
-    } else if (m & S_IFDIR) {
-        strcpy(type, "DIR");
-    } else if (m & S_IFCHR) {
-        strcpy(type, "CHR");
-    } else if (m & S_IFIFO) {
-        strcpy(type, "FIFO");
-    } else if (m & S_IFSOCK) {
-        strcpy(type, "SOCK");
-    } else {
-        strcpy(type, "unknown");
+    m &= S_IFMT;
+    switch (m) {
+        case S_IFREG:
+            strcpy(type, "REG");
+            break;
+        case S_IFDIR:
+            strcpy(type, "DIR");
+            break;
+        case S_IFCHR:
+            strcpy(type, "CHR");
+            break;
+        case S_IFIFO:
+            strcpy(type, "FIFO");
+            break;
+        case S_IFSOCK:
+            strcpy(type, "SOCK");
+            break;
+        default:
+            strcpy(type, "unknown");
+
     }
 
     return type;

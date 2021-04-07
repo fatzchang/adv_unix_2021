@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <unistd.h>
 
 #include "hw1.h"
 #include "file.h"
@@ -121,8 +122,6 @@ void list_fd(const char *command, const char *pid_string, const char *user)
              fd[MAX_STRLEN] = "",
              permission[2] = "";
 
-
-
         strcpy(fd_path, path);
         strcat(fd_path, "/");
         strcat(fd_path, entry->d_name);
@@ -137,10 +136,11 @@ void list_fd(const char *command, const char *pid_string, const char *user)
         }
         get_type(fd_stat, type);
         get_node(fd_stat, node);
-        realpath(fd_path, fd_real_path);
+        readlink(fd_path, fd_real_path, MAX_STRLEN);
 
         strcpy(fd, entry->d_name);
         strcat(fd, permission);
+
 
         if (strstr(fd_real_path, "(deleted)") != NULL) {
             format_printer(command, pid_string, user, fd, "unknown", node, fd_real_path);
